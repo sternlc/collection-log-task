@@ -6,6 +6,7 @@ import javax.inject.Inject;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -81,6 +82,8 @@ public class TaskGeneratorPlugin extends Plugin
 			"Bottomless compost bucket",
 			"Infernal cape",
 			"Fire cape",
+			"Draconic visage",
+			"Skeletal visage",
 			"Remnant of"
 	};
 
@@ -165,7 +168,7 @@ public class TaskGeneratorPlugin extends Plugin
 		}
 	}
 
-	public void generateTask() {
+	public void loadCollectionLog() {
 		if (client.getLocalPlayer() == null) {
 			return;
 		}
@@ -173,11 +176,21 @@ public class TaskGeneratorPlugin extends Plugin
 			String fileName = "collectionlog-" + client.getLocalPlayer().getName() + ".json";
 			FileReader fileReader = new FileReader(new File(RUNELITE_DIR, "collectionlog") + File.separator + fileName);
 			collectionLogData = new JsonParser().parse(fileReader).getAsJsonObject();
-			getTask(collectionLogData);
 			fileReader.close();
+			log.info("Collection log data loaded for " + client.getLocalPlayer().getName());
 		} catch (IOException | JsonParseException e) {
 			log.error("Error loading collection log data");
 		}
+	}
+
+	public void generateTask() {
+		if (client.getLocalPlayer() == null) {
+			return;
+		}
+		if (collectionLogData == null) {
+			loadCollectionLog();
+		}
+		getTask(collectionLogData);
 	}
 
 	private void getTask(JsonObject jsonObject) {
@@ -231,13 +244,11 @@ public class TaskGeneratorPlugin extends Plugin
 	}
 
 	private String getKey(JsonObject jsonObject, boolean random) {
-		List<String> keys = new ArrayList<String>(jsonObject.keySet());
+		val keys = new ArrayList<>(jsonObject.keySet());
 		if (random) {
 			int index = new Random().nextInt(keys.size());
 			return keys.get(index);
-		} else {
-			return keys.get(0);
-		}
+		} else return keys.get(0);
 	}
 
 	private String getTask(JsonArray jsonArray) {
@@ -273,6 +284,7 @@ public class TaskGeneratorPlugin extends Plugin
 			clientThread.invokeAtTickEnd(this::loadTask);
 			return;
 		}
+		loadCollectionLog();
 		try {
 			String fileName = "current-task-" + client.getLocalPlayer().getName() + ".json";
 			FileReader fileReader = new FileReader(new File(RUNELITE_DIR, "collectionlog") + File.separator + fileName);
