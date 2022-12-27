@@ -206,7 +206,7 @@ public class TaskGeneratorPlugin extends Plugin
 		generatedTaskItems = tabs.getAsJsonObject(tab).getAsJsonObject(task).getAsJsonArray("items");
 		String item = getTask(generatedTaskItems);
 		String name = item.split("=")[0];
-		if (Arrays.stream(excludedItems).anyMatch(name::contains) || isExcluded(randomEvents, name) || (!config.includePets() && isExcluded(pets, name))) {
+		if ((!config.includeRares() && Arrays.stream(excludedItems).anyMatch(name::contains)) || isExcluded(randomEvents, name) || (!config.includePets() && isExcluded(pets, name))) {
 			getTask(jsonObject);
 			return;
 		}
@@ -216,10 +216,7 @@ public class TaskGeneratorPlugin extends Plugin
 			return;
 		}
 		int itemId = Integer.parseInt(item.substring(item.indexOf("=") + 1).trim());
-		String formatted = name;
-		if (config.generalizeCategories()) {
-			formatted = "Get a unique item from<br>" + task;
-		}
+		String formatted = "Get a unique item from<br>" + task;
 		taskGeneratorPanel.refreshTaskPanel(formatted, itemId);
 	}
 
@@ -295,10 +292,7 @@ public class TaskGeneratorPlugin extends Plugin
 			String item = getTask(generatedTaskItems);
 			String name = item.split("=")[0];
 			int itemId = Integer.parseInt(item.substring(item.indexOf("=") + 1).trim());
-			String formatted = name;
-			if (config.generalizeCategories()) {
-				formatted = "Get a unique item from<br>" + task;
-			}
+			String formatted = "Get a unique item from<br>" + task;
 			taskGeneratorPanel.refreshTaskPanel(formatted, itemId);
 			loaded = true;
 			fileReader.close();

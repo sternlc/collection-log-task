@@ -19,8 +19,8 @@ public interface TaskGeneratorConfig extends Config
 
 	@ConfigItem(
 			keyName = "autogenerate",
-			name = "Autogenerate new task",
-			description = "Autogenerate a new task after completing your current task",
+			name = "Auto-complete task",
+			description = "Automatically generate a new task after completing your current task",
 			position = 3
 	)
 	default boolean autogenerate() {
@@ -38,9 +38,9 @@ public interface TaskGeneratorConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "include_raids",
-			name = "Include items from raids",
-			description = "Allows unique raid items to be generated as a task",
+			keyName = "include_rares",
+			name = "Include rare items",
+			description = "Allows rare items like 3rd age to be generated as a task",
 			position = 5
 	)
 	default boolean includeRaids() {
@@ -53,7 +53,7 @@ public interface TaskGeneratorConfig extends Config
 			description = "Allow ANY unique from a category to count for completion (instead of only a specific item)",
 			position = 6
 	)
-	default boolean generalizeCategories() {
-		return true;
+	default boolean includeRares() {
+		return false;
 	}
 }
