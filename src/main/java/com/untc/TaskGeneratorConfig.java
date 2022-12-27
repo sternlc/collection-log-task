@@ -38,9 +38,9 @@ public interface TaskGeneratorConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "include_rares",
-			name = "Include rare items",
-			description = "Allows rare items like 3rd age to be generated as a task",
+			keyName = "include_raids",
+			name = "Include unique items from raids",
+			description = "Allows items from raids to be generated as a task",
 			position = 5
 	)
 	default boolean includeRaids() {
@@ -48,9 +48,9 @@ public interface TaskGeneratorConfig extends Config
 	}
 
 	@ConfigItem(
-			keyName = "generalize",
-			name = "Generalize categories",
-			description = "Allow ANY unique from a category to count for completion (instead of only a specific item)",
+			keyName = "include_rares",
+			name = "Include rare items",
+			description = "Allows rare items like 3rd age to be generated as a task",
 			position = 6
 	)
 	default boolean includeRares() {

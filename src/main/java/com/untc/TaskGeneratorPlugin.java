@@ -84,7 +84,8 @@ public class TaskGeneratorPlugin extends Plugin
 			"Fire cape",
 			"Draconic visage",
 			"Skeletal visage",
-			"Remnant of"
+			"remnant",
+			"mutagen"
 	};
 
 	private String task;
