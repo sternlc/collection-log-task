@@ -62,32 +62,6 @@ public class TaskGeneratorPlugin extends Plugin
 
 	private JsonArray generatedTaskItems;
 
-	private final String[] excludedItems = new String[]{
-			"Gilded",
-			"3rd age",
-			"Ring of",
-			"Victor's cape",
-			"Icthlarin's shroud",
-			"Xeric's",
-			"Sinhaza shroud",
-			"Godsword shard",
-			"Evil chicken",
-			"(dusk)",
-			"Jar of",
-			"Bucket helm (g)",
-			"Lava dragon mask",
-			"Iasor seed",
-			"Attas seed",
-			"Kronos seed",
-			"Bottomless compost bucket",
-			"Infernal cape",
-			"Fire cape",
-			"Draconic visage",
-			"Skeletal visage",
-			"remnant",
-			"mutagen"
-	};
-
 	private String task;
 
 	private boolean loaded;
@@ -197,22 +171,23 @@ public class TaskGeneratorPlugin extends Plugin
 	private void getTask(JsonObject jsonObject) {
 		JsonObject tabs = jsonObject.getAsJsonObject("tabs");
 		String tab = getKey(tabs, true);
-		if (tab.equals("Raids") && !config.includeRaids()) {
-			getTask(jsonObject);
-			return;
-		}
 		JsonArray pets = tabs.getAsJsonObject("Other").getAsJsonObject("All Pets").getAsJsonArray("items");
 		JsonArray randomEvents = tabs.getAsJsonObject("Other").getAsJsonObject("Random Events").getAsJsonArray("items");
 		task = getKey(tabs.getAsJsonObject(tab), true);
 		generatedTaskItems = tabs.getAsJsonObject(tab).getAsJsonObject(task).getAsJsonArray("items");
 		String item = getTask(generatedTaskItems);
 		String name = item.split("=")[0];
-		if ((!config.includeRares() && Arrays.stream(excludedItems).anyMatch(name::contains)) || isExcluded(randomEvents, name) || (!config.includePets() && isExcluded(pets, name))) {
+		if (tab.equals("Raids") && !config.includeRaids()) {
 			getTask(jsonObject);
 			return;
 		}
 		if (isObtained(generatedTaskItems, name)) {
 			log.info("Already obtained " + name + ", generating new task...");
+			getTask(jsonObject);
+			return;
+		}
+		if ((!config.includeRares() && Arrays.stream(Tiers.PASSIVE.getItems()).anyMatch(name::contains)) || isExcluded(randomEvents, name) || (!config.includePets() && isExcluded(pets, name))) {
+			log.info(name + " is excluded, generating new task...");
 			getTask(jsonObject);
 			return;
 		}
@@ -291,7 +266,11 @@ public class TaskGeneratorPlugin extends Plugin
 			generatedTaskItems = loadedTask.getAsJsonObject(task).getAsJsonArray("items");
 
 			String item = getTask(generatedTaskItems);
-			String name = item.split("=")[0];
+			if (isObtained(generatedTaskItems, item.split("=")[0])) {
+				log.info("Item shown is already obtained! (" + item + ")");
+				loadTask();
+				return;
+			}
 			int itemId = Integer.parseInt(item.substring(item.indexOf("=") + 1).trim());
 			String formatted = "Get a unique item from<br>" + task;
 			taskGeneratorPanel.refreshTaskPanel(formatted, itemId);

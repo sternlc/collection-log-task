@@ -8,6 +8,8 @@ You do not need to enable uploading your data to their [site](https://collection
 
 In the in-game settings, you must enable the `Collection log - New addition notification` for auto-completing tasks.
 
+![](https://i.imgur.com/eZRJy9n.png)
+
 ### Generate a task
 * Download and set up the Collection Log [Plugin](https://github.com/evansloan/collection-log)
 * In the configurations, select how you want the task generator to operate (excluding pets, rare drops, etc)
